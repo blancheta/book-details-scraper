@@ -12,38 +12,41 @@ def home():
 
 
 @app.route('/api/v1/book-details/', methods=["GET"])
-def get_book_detils():
+def get_book_details():
     ibsn = request.args.get('ibsn')
     # connect to website
     url = "https://www.paperbackswap.com/book/browser.php?k=" + ibsn
     html = requests.get(url)
     # -------------------- SCRAPING --------------------------#
     soup = BeautifulSoup(html.text, 'html.parser')
-
-    isbn = soup.find("span", itemprop="isbn").text
-    title = soup.find(class_="book_title").text
     try:
-        description = soup.find("span", itemprop="description").text
-    except :
-        description = ""
-    num_pages = soup.find("span", itemprop="numPages").text
+        isbn = soup.find("span", itemprop="isbn").text
+        title = soup.find(class_="book_title").text
+        try:
+            description = soup.find("span", itemprop="description").text
+        except:
+            description = ""
+        num_pages = soup.find("span", itemprop="numPages").text
     
-    book_author = soup.find(class_="book_author").text
-    categorie = soup.find("ul", itemprop="genre")
-    cover = soup.find(id="book_image_l")['src']
-    categorie_list = []
-    for i in categorie:
-        categorie_list.append(i.text)
-
-    return jsonify(
+        book_author = soup.find(class_="book_author").text
+        categorie = soup.find("ul", itemprop="genre")
+        cover = soup.find(id="book_image_l")['src']
+        categorie_list = []
+        for i in categorie:
+            categorie_list.append(i.text)
+        return jsonify(
         isbn = ibsn,
         title = title,
         description = description,
         num_pages = num_pages,
         book_author =book_author,
         categorie = categorie_list,
-        book_cover_url = cover
+        book_cover_url = cover), 200
+    except Exception as e:
+        return jsonify(
+            error = "<isbn> is incorrect",
+        ), 200
 
-    ), 200
+    
 
 app.run()
