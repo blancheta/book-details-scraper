@@ -24,7 +24,7 @@ Response:
   'authors': string (if many separated by comma)
   'category': string,
   'book_cover_url': string
-}  
+}
 ```
 
 
