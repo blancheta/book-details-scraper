@@ -19,7 +19,6 @@ def get_book_details():
     html = requests.get(url)
     # -------------------- SCRAPING --------------------------#
     soup = BeautifulSoup(html.text, 'html.parser')
-    # try : verify if isbn data is found
     try:
         isbn = soup.find("span", itemprop="isbn").text
         title = soup.find(class_="book_title").text
@@ -43,7 +42,6 @@ def get_book_details():
         book_author =book_author,
         categorie = categorie_list,
         book_cover_url = cover), 200
-    # except: send json error if isbn data isn't found
     except Exception as e:
         return jsonify(
             error = "<isbn> is incorrect",
