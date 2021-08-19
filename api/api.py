@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask, jsonify, request
 from bs4 import BeautifulSoup
 import requests
@@ -14,6 +16,12 @@ def home():
 
 @app.route("/api/v1/book-details/", methods=["GET"])
 def get_book_details():
+    # test and log
+    url_test = "https://www.paperbackswap.com/book/browser.php?k=9782746040885"
+    find_test = BeautifulSoup(requests.get(url_test).text, "html.parser").find("span", itemprop="isbn")
+    if find_test is None:
+        logging.critical('ALERT: the website code has modified')
+
     ibsn = request.args.get("ibsn")
     # connect to website
     url = "https://www.paperbackswap.com/book/browser.php?k=" + ibsn
@@ -38,7 +46,7 @@ def get_book_details():
 
         return (
             jsonify(
-                isbn=ibsn,
+                isbn=isbn,
                 title=title,
                 description=description,
                 num_pages=num_pages,
@@ -49,6 +57,7 @@ def get_book_details():
             200,
         )
     except Exception as e:
+        print(e)
         return (
             jsonify(
                 error="<isbn> is incorrect",
