@@ -1,4 +1,6 @@
-"""Book scraping api"""
+"""
+Book scraping api.This api scrape paperbackswap website to get book request details
+"""
 import logging
 
 from flask import Flask, jsonify, request
@@ -46,10 +48,9 @@ def get_book_details():
             422,
         )
     # we get the ibsn, we check and we return a message according to the result
-    ibsn = request.args.get("ibsn")
-    if ibsn == "":
-        print("ibsn")
-        raise BadRequestException()
+    ibsn = request.args.get("ibsn", default=None, type=None)
+    if not ibsn:
+        raise BadRequestException("Bad request exception, ibsn is none")
 
     # connect to website
     url = "https://www.paperbackswap.com/book/browser.php?k=" + ibsn
