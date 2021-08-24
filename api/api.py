@@ -1,5 +1,6 @@
 """
-Book scraping api.This api scrape paperbackswap website to get book request details
+Book scraping API.
+This api scrape paperbackswap website to get book request details
 """
 import logging
 
@@ -48,9 +49,9 @@ def get_book_details():
             422,
         )
     # we get the ibsn, we check and we return a message according to the result
-    ibsn = request.args.get("ibsn", default=None, type=None)
+    ibsn = request.args.get("ibsn")
     if not ibsn:
-        raise BadRequestException("Bad request exception, ibsn is none")
+        raise BadRequestException("Bad request exception, isbn is missing")
 
     # connect to website
     url = "https://www.paperbackswap.com/book/browser.php?k=" + ibsn
